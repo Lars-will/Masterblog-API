@@ -1,3 +1,5 @@
+from wsgiref.util import request_uri
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -36,7 +38,20 @@ def add_posts():
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
-    return jsonify(POSTS)
+    str_sort = request.args.get('sort', '')
+    str_direction = request.args.get('direction', '')
+
+    if str_direction == '' and str_sort == '':
+        return jsonify(POSTS)
+
+    if (str_direction == 'asc' or str_direction == 'desc'
+        ) and (str_sort == 'title' or str_sort == 'content'):
+        if str_direction == 'asc':
+            sorted_posts = sorted(POSTS, key=lambda x: x[str_sort])
+        else:
+            sorted_posts = sorted(POSTS, key=lambda x: x[str_sort], reverse = True)
+        return jsonify(sorted_posts)
+    return 'Bad Request', 400
 
 
 @app.route('/api/posts/<int:id>', methods=['DELETE'])
