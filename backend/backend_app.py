@@ -13,6 +13,7 @@ POSTS = [
 
 
 def validate_blog_post(dict_blog_post):
+    """Checking if title and content was provided."""
     if 'title' not in dict_blog_post or 'content' not in dict_blog_post:
         return False
     return True
@@ -20,6 +21,7 @@ def validate_blog_post(dict_blog_post):
 
 @app.route('/api/posts', methods = ['POST'])
 def add_posts():
+    """logic to add blog post to the list"""
     new_blog_post = request.get_json()
     print(new_blog_post)
     if not validate_blog_post(new_blog_post):
@@ -38,6 +40,8 @@ def add_posts():
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
+    """Logic to load blog posts. If Parameters sort and direction are provided
+    result is sorte accordingly. If not, results are not sorted. """
     str_sort = request.args.get('sort', '')
     str_direction = request.args.get('direction', '')
 
@@ -56,6 +60,7 @@ def get_posts():
 
 @app.route('/api/posts/<int:id>', methods=['DELETE'])
 def delete_post(id):
+    """Logic to delete post"""
     global POSTS
     # Find the post with the given ID
     post_del = find_post_by_id(id)
@@ -69,6 +74,7 @@ def delete_post(id):
 
 @app.route('/api/posts/<int:id>', methods=['PUT'])
 def update_post(id):
+    """Logic top update post"""
     # Find the post with the given ID
 
     post = find_post_by_id(id)
@@ -86,6 +92,7 @@ def update_post(id):
 
 @app.route('/api/posts/search', methods=['GET'])
 def search_post():
+    """Logic to search posts by title or content"""
     title = request.args.get('title', '')
     content = request.args.get('content', '')
     lst_search_results = []
@@ -103,6 +110,7 @@ def search_post():
 
 
 def find_post_by_id(post_id):
+    """Returns post with specific id. If none is found, None is returned."""
     for post in POSTS:
         if post['id'] == post_id:
             return post
