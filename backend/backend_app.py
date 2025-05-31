@@ -69,12 +69,29 @@ def update_post(id):
     return jsonify(post)
 
 
+@app.route('/api/posts/search', methods=['GET'])
+def search_post():
+    title = request.args.get('title', '')
+    content = request.args.get('content', '')
+    lst_search_results = []
+    if title != '':
+        for post in POSTS:
+            if title in post['title']:
+                lst_search_results.append(post)
+    if content != '':
+        for post in POSTS:
+            if content in post['content']:
+                lst_search_results.append(post)
+    if len(lst_search_results) == 0:
+        return ""
+    return jsonify(lst_search_results)
+
+
 def find_post_by_id(post_id):
     for post in POSTS:
         if post['id'] == post_id:
             return post
     return None
-
 
 
 if __name__ == '__main__':
